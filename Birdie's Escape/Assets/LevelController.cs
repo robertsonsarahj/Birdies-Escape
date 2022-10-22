@@ -41,6 +41,7 @@ public class LevelController : MonoBehaviour
     public void respawn()
     {
         _timePassed = 0;
+        _keysCollected = 0;
         setKeysInactive();
     }
 
