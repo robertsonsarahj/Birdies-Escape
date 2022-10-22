@@ -5,6 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] LevelController _levelController;
+    [SerializeField] Sprite _restSprite;
+    [SerializeField] Sprite _spriteJump;
+    [SerializeField] Sprite _spriteFall;
     [SerializeField] GameObject _deadPlayer;
     [SerializeField] float _jumpForce = 5f;
     [SerializeField] float _moveForce = 2f;
@@ -15,6 +18,7 @@ public class Player : MonoBehaviour
     float _horizontalMove = 0f;
     bool _jump = false;
     Vector2 _originalPosition;
+    Vector2 _oldPosition;
     Quaternion _originalRotation;
 
     // Start is called before the first frame update
@@ -24,6 +28,7 @@ public class Player : MonoBehaviour
         _started = false;
         _originalPosition = transform.position;
         _originalRotation = transform.rotation;
+        _oldPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -31,6 +36,7 @@ public class Player : MonoBehaviour
     {
         if(!_started)
         {
+            GetComponent<SpriteRenderer>().sprite = _restSprite;
             transform.position = _originalPosition;
         }
         _horizontalMove = Input.GetAxisRaw("Horizontal") * _moveForce;
@@ -44,6 +50,16 @@ public class Player : MonoBehaviour
         {
             _jump = true;
         }
+
+        if(transform.position.y > _oldPosition.y || _jump == true)
+        {
+            GetComponent<SpriteRenderer>().sprite = _spriteJump;
+        }
+        else if(transform.position.y < _oldPosition.y)
+        {
+            GetComponent<SpriteRenderer>().sprite = _spriteFall;
+        }
+        _oldPosition = transform.position;
     }
 
     void FixedUpdate()
@@ -66,19 +82,29 @@ public class Player : MonoBehaviour
             Rigidbody2D deadRigidbody = dead.GetComponent<Rigidbody2D>();
             deadRigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
 
+            Invoke("movePlayerOnDeath", 0.1f);
             Invoke("respawn", 2.5f);
+        }
+        else if(collision.gameObject.name.ToLower().Contains("key"))
+        {
+            _levelController.collectKey(collision.gameObject);
         }
     }
 
     void respawn()
     {
-        rigidbody.transform.position = _levelController._spawn;
         rigidbody.constraints = RigidbodyConstraints2D.None;
         this.GetComponent<SpriteRenderer>().enabled = true;
         _started = false;
         _isDead = false;
 
         Destroy(dead);
+        _levelController.respawn();
+    }
+
+    void movePlayerOnDeath()
+    {
+        rigidbody.transform.position = _levelController._spawn;
     }
 
     void move()
@@ -91,7 +117,6 @@ public class Player : MonoBehaviour
                 _jump = false;
             }
             Vector3 movementVector = (rigidbody.transform.position + new Vector3(_horizontalMove * Time.fixedDeltaTime, 0, 0));
-            //rigidbody.MovePosition(movementVector);
             rigidbody.transform.position = movementVector;
         }
         transform.rotation = _originalRotation;
