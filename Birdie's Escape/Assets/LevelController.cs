@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour
 {
     [SerializeField] Player _player;
     [SerializeField] GameObject _enemies;
     [SerializeField] GameObject _keys;
+    [SerializeField] GameObject _portal;
     [SerializeField] public Vector2 _spawn = new Vector2(0, 0);
     private float _timePassed;
     private int _keysCollected;
     private int _totalKeys;
     private bool _keysActive;
+    private bool _portalActive;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +26,7 @@ public class LevelController : MonoBehaviour
         _timePassed = 0;
         _keysActive = false;
         setKeysInactive();
+        setPortalInactive();
     }
 
     // Update is called once per frame
@@ -34,7 +39,7 @@ public class LevelController : MonoBehaviour
         }
         if(_keysCollected == _totalKeys)
         {
-
+            setPortalActive();
         }
     }
 
@@ -43,6 +48,12 @@ public class LevelController : MonoBehaviour
         _timePassed = 0;
         _keysCollected = 0;
         setKeysInactive();
+        setPortalInactive();
+    }
+
+    public void enterPortal()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void collectKey(GameObject k)
@@ -76,5 +87,19 @@ public class LevelController : MonoBehaviour
             key.gameObject.SetActive(false);
             key.gameObject.GetComponent<Rigidbody2D>().simulated = false;
         }
+    }
+
+    void setPortalActive()
+    {
+        _portalActive = true;
+        _portal.SetActive(true);
+        _portal.GetComponent<Rigidbody2D>().simulated = true;
+    }
+
+    void setPortalInactive()
+    {
+        _portalActive = false;
+        _portal.SetActive(false);
+        _portal.GetComponent<Rigidbody2D>().simulated = false;
     }
 }

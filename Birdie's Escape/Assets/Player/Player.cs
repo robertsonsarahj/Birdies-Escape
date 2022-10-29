@@ -81,13 +81,16 @@ public class Player : MonoBehaviour
             dead = Instantiate(_deadPlayer, (deadPos.position + new Vector3(0, 0, -1)), deadPos.rotation);
             Rigidbody2D deadRigidbody = dead.GetComponent<Rigidbody2D>();
             deadRigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
-
             Invoke("movePlayerOnDeath", 0.1f);
             Invoke("respawn", 2.5f);
         }
         else if(collision.gameObject.name.ToLower().Contains("key"))
         {
             _levelController.collectKey(collision.gameObject);
+        }
+        else if(collision.gameObject.name.ToLower().Contains("portal"))
+        {
+            _levelController.enterPortal();
         }
     }
 
