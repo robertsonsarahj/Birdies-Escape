@@ -78,6 +78,8 @@ public class Player : MonoBehaviour
             rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             this.GetComponent<SpriteRenderer>().enabled = false;
 
+            this.GetComponent<AudioSource>().Play();
+
             dead = Instantiate(_deadPlayer, (deadPos.position + new Vector3(0, 0, -1)), deadPos.rotation);
             Rigidbody2D deadRigidbody = dead.GetComponent<Rigidbody2D>();
             deadRigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);

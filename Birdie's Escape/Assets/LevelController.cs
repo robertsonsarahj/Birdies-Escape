@@ -62,6 +62,7 @@ public class LevelController : MonoBehaviour
         {
             if (key.gameObject == k)
             {
+                this.GetComponent<AudioSource>().Play();
                 key.gameObject.SetActive(false);
                 key.gameObject.GetComponent<Rigidbody2D>().simulated = false;
             }
