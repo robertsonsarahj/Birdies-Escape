@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.GetComponent<SpriteRenderer>().sprite = _restSprite;
         rigidbody = GetComponent<Rigidbody2D>();
         _started = false;
         _originalPosition = transform.position;
@@ -92,6 +93,8 @@ public class Player : MonoBehaviour
         }
         else if(collision.gameObject.name.ToLower().Contains("portal"))
         {
+            rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            this.GetComponent<SpriteRenderer>().enabled = false;
             _levelController.enterPortal();
         }
     }
@@ -100,6 +103,7 @@ public class Player : MonoBehaviour
     {
         rigidbody.constraints = RigidbodyConstraints2D.None;
         this.GetComponent<SpriteRenderer>().enabled = true;
+        this.GetComponent<SpriteRenderer>().sprite = _restSprite;
         _started = false;
         _isDead = false;
 

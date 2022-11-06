@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour
@@ -10,6 +10,8 @@ public class LevelController : MonoBehaviour
     [SerializeField] GameObject _enemies;
     [SerializeField] GameObject _keys;
     [SerializeField] GameObject _portal;
+    [SerializeField] Image _black;
+    [SerializeField] Animator _animator;
     [SerializeField] public Vector2 _spawn = new Vector2(0, 0);
     private float _timePassed;
     private int _keysCollected;
@@ -20,6 +22,7 @@ public class LevelController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _animator.Play("FadeOut");
         _totalKeys = _keys.transform.childCount;
         Debug.Log(_totalKeys);
         _keysCollected = 0;
@@ -53,7 +56,9 @@ public class LevelController : MonoBehaviour
 
     public void enterPortal()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+        //_player.GetComponent<SpriteRenderer>().enabled = false;
+        StartCoroutine(fading());
     }
 
     public void collectKey(GameObject k)
@@ -68,6 +73,21 @@ public class LevelController : MonoBehaviour
             }
         }
         _keysCollected++;
+    }
+
+    IEnumerator fading()
+    {
+        _animator.Play("FadeIn");
+        yield return new WaitUntil(()=>_black.color.a==1);
+        if(SceneManager.GetActiveScene().buildIndex + 1 >= SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        
     }
 
     void setKeysActive()
