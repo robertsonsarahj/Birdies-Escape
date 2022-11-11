@@ -34,6 +34,8 @@ public class LevelController : MonoBehaviour
         setPortalInactive();
     }
 
+    
+
     // Update is called once per frame
     void Update()
     {
@@ -120,7 +122,9 @@ public class LevelController : MonoBehaviour
     {
         _animator.Play("FadeIn");
         yield return new WaitUntil(() => _black.color.a == 1);
+        
         SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings - 1);
+        _mainMenuController.Start();
     }
 
     void setKeysActive()

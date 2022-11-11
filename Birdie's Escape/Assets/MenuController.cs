@@ -11,10 +11,12 @@ public class MenuController : MonoBehaviour
     [SerializeField] Animator _animator;
     [SerializeField] TextMeshProUGUI _text1;
     [SerializeField] TextMeshProUGUI _text2;
+    [SerializeField] MainMenuController _mainMenuController;
 
     // Start is called before the first frame update
     void Start()
     {
+        _mainMenuController = UnityEngine.Object.FindObjectOfType<MainMenuController>();
         _animator.Play("FadeOut");
         StartCoroutine(showText(1f, _text1));
         StartCoroutine(showText(1f, _text2));
@@ -23,6 +25,11 @@ public class MenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(_mainMenuController == null)
+        {
+            _mainMenuController = UnityEngine.Object.FindObjectOfType<MainMenuController>();
+        }
         if (Input.GetKeyDown(KeyCode.Return))
         {
             enterPortal();
@@ -54,8 +61,11 @@ public class MenuController : MonoBehaviour
         else if(SceneManager.GetActiveScene().name.Equals("Start Menu"))
         {
             SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings-1);
+            if(_mainMenuController != null)
+            {
+                _mainMenuController.Start();
+            }
         }
-
     }
 
     IEnumerator fadeText(float t, TextMeshProUGUI i)

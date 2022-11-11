@@ -7,7 +7,8 @@ using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
-    Image _black;
+    Canvas _canvas;
+    public Image _black;
     public Animator _animator;
     TextMeshProUGUI _text1;
     TextMeshProUGUI _text2;
@@ -20,7 +21,7 @@ public class MainMenuController : MonoBehaviour
     public Button Level7Button;
     public Button Level8Button;
     public Button Level9Button;
-    //List<Button> buttons;
+    bool _loaded = false;
 
     void Awake()
     {
@@ -38,28 +39,31 @@ public class MainMenuController : MonoBehaviour
         Debug.Log(savedButtons.Length);
         if(savedButtons.Length > 9)
         {
-            foreach (GameObject button in go.scene.GetRootGameObjects())
+            if(Level1Button == null)
             {
-                if (button.name.Contains("Button"))
+                foreach (GameObject button in go.scene.GetRootGameObjects())
                 {
-                    if (button.name.Contains("1"))
-                        Level1Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("2"))
-                        Level2Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("3"))
-                        Level3Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("4"))
-                        Level4Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("5"))
-                        Level5Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("6"))
-                        Level6Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("7"))
-                        Level7Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("8"))
-                        Level8Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("9"))
-                        Level9Button = button.GetComponent<Button>();
+                    if (button.name.Contains("Button"))
+                    {
+                        if (button.name.Contains("1"))
+                            Level1Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("2"))
+                            Level2Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("3"))
+                            Level3Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("4"))
+                            Level4Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("5"))
+                            Level5Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("6"))
+                            Level6Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("7"))
+                            Level7Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("8"))
+                            Level8Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("9"))
+                            Level9Button = button.GetComponent<Button>();
+                    }
                 }
             }
             foreach (GameObject button in SceneManager.GetActiveScene().GetRootGameObjects())
@@ -72,66 +76,75 @@ public class MainMenuController : MonoBehaviour
         }
         else
         {
-            foreach (GameObject button in SceneManager.GetActiveScene().GetRootGameObjects())
+            if(Level1Button == null)
             {
-                if (button.name.Contains("Button"))
+                foreach (GameObject button in SceneManager.GetActiveScene().GetRootGameObjects())
                 {
-                    if (button.name.Contains("1"))
-                        Level1Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("2"))
-                        Level2Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("3"))
-                        Level3Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("4"))
-                        Level4Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("5"))
-                        Level5Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("6"))
-                        Level6Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("7"))
-                        Level7Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("8"))
-                        Level8Button = button.GetComponent<Button>();
-                    else if (button.name.Contains("9"))
-                        Level9Button = button.GetComponent<Button>();
+                    if (button.name.Contains("Button"))
+                    {
+                        if (button.name.Contains("1"))
+                            Level1Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("2"))
+                            Level2Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("3"))
+                            Level3Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("4"))
+                            Level4Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("5"))
+                            Level5Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("6"))
+                            Level6Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("7"))
+                            Level7Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("8"))
+                            Level8Button = button.GetComponent<Button>();
+                        else if (button.name.Contains("9"))
+                            Level9Button = button.GetComponent<Button>();
+                    }
                 }
             }
         }
 
-        int animatorCount = 0;
-        foreach (Image animator in GameObject.FindObjectsOfType<Image>())
+        int canvasCount = 0;
+        foreach (Canvas canvas in GameObject.FindObjectsOfType<Canvas>())
         {
-            if (animator.name.Equals("AnimatorImage"))
+            if (canvas.name.Equals("MenuCanvas"))
             {
-                animatorCount++;
+                canvasCount++;
             }
         }
 
-        Debug.Log(animatorCount);
-        if (animatorCount > 1)
+        Debug.Log(canvasCount);
+        if (canvasCount > 1)
         {
-            foreach (GameObject animator in go.scene.GetRootGameObjects())
+            if(_canvas == null)
             {
-                if (animator.name.Equals("AnimatorImage"))
+                foreach (GameObject canvas in go.scene.GetRootGameObjects())
                 {
-                    _animator = animator.GetComponent<Animator>();
+                    if (canvas.name.Equals("MenuCanvas"))
+                    {
+                        _canvas = canvas.GetComponent<Canvas>();
+                    }
                 }
             }
-            foreach (GameObject animator in SceneManager.GetActiveScene().GetRootGameObjects())
+            foreach (GameObject canvas in SceneManager.GetActiveScene().GetRootGameObjects())
             {
-                if (animator.name.Equals("AnimatorImage"))
+                if (canvas.name.Equals("MenuCanvas"))
                 {
-                    Destroy(animator);
+                    Destroy(canvas);
                 }
             }
         }
         else
         {
-            foreach(GameObject animator in SceneManager.GetActiveScene().GetRootGameObjects())
+            if(_canvas == null)
             {
-                if(animator.name.Equals("AnimatorImage"))
+                foreach (GameObject canvas in SceneManager.GetActiveScene().GetRootGameObjects())
                 {
-                    _animator = animator.GetComponent<Animator>();
+                    if (canvas.name.Equals("MenuCanvas"))
+                    {
+                        _canvas = canvas.GetComponent<Canvas>();
+                    }
                 }
             }
         }
@@ -148,15 +161,27 @@ public class MainMenuController : MonoBehaviour
         DontDestroyOnLoad(this.Level7Button);
         DontDestroyOnLoad(this.Level8Button);
         DontDestroyOnLoad(this.Level9Button);
-        DontDestroyOnLoad(this._animator);
-        
+        DontDestroyOnLoad(this._canvas);
+
+        if(_black == null) {
+            for (int i = 0; i < this._canvas.transform.childCount; i++)
+            {
+                if (this._canvas.transform.GetChild(i).name.Equals("Image"))
+                {
+                    this._black = this._canvas.transform.GetChild(i).GetComponent<Image>();
+                    break;
+                }
+            }
+        }
+        if(_animator == null)
+        {
+            this._animator = this._black.GetComponent<Animator>();
+        }
     }
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        this._black = GameObject.FindObjectOfType<Image>();
-        //this._animator = _black.GetComponent<Animator>();
         Level1Button.unlocked = true;
         foreach(TextMeshProUGUI text in GameObject.FindObjectsOfType<TextMeshProUGUI>())
         {
@@ -164,7 +189,6 @@ public class MainMenuController : MonoBehaviour
             if (text.name.Equals("Text (TMP)"))
                 this._text1 = text;
         }
-        //this.buttons = new List<Button>(){Level1Button, Level2Button, Level3Button, Level4Button, Level5Button, Level6Button, Level7Button, Level8Button, Level9Button};
         _animator.Play("FadeOut");
 
         StartCoroutine(showText(1f, _text1));
@@ -174,6 +198,17 @@ public class MainMenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!_loaded && SceneManager.GetSceneByName("Level Menu").isLoaded)
+        {
+            _loaded = true;
+            StartCoroutine(fadeOut());
+            StartCoroutine(showText(1f, _text1));
+            StartCoroutine(showText(1f, _text2));
+        }
+        if(_loaded && !SceneManager.GetSceneByName("Level Menu").isLoaded)
+        {
+            _loaded = false;
+        }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastHit2D rayHit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
@@ -194,18 +229,6 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    /*public void unlockLevel(string levelName)
-    {
-        foreach(Button button in buttons)
-        {
-            if(button.name.Contains(levelName))
-            {
-                button.unlocked = true;
-                break;
-            }
-        }
-    }*/
-
     public void enterScene(int sceneNumber)
     {
         //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
@@ -220,20 +243,24 @@ public class MainMenuController : MonoBehaviour
         //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         //_player.GetComponent<SpriteRenderer>().enabled = false;
         StartCoroutine(menuFading());
+        StartCoroutine(fadeText(1f, _text1));
+        StartCoroutine(fadeText(1f, _text2));
     }
 
     IEnumerator menuFading()
     {
-        //_animator.Play("FadeIn");
-        yield return new WaitUntil(() => _black.color.a == 0);
+        _animator.Play("FadeIn");
+        yield return new WaitUntil(() => _black.color.a == 1);
         SceneManager.LoadScene(0);
+        _animator.Play("FadeOut");
     }
 
     IEnumerator fading(int sceneNumber)
     {
-        //_animator.Play("FadeIn");
-        yield return new WaitUntil(() => _black.color.a == 0);
+        _animator.Play("FadeIn");
+        yield return new WaitUntil(() => _black.color.a == 1);
         SceneManager.LoadScene(sceneNumber);
+        _animator.Play("FadeOut");
     }
 
     IEnumerator fadeText(float t, TextMeshProUGUI i)
@@ -260,5 +287,11 @@ public class MainMenuController : MonoBehaviour
                 yield return null;
             }
         }
+    }
+
+    IEnumerator fadeOut()
+    {
+        _animator.Play("FadeOut");
+        yield return new WaitUntil(() => _black.color.a == 1);
     }
 }
