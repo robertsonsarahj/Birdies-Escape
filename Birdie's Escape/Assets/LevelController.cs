@@ -18,11 +18,13 @@ public class LevelController : MonoBehaviour
     private int _totalKeys;
     private bool _keysActive;
     private bool _portalActive;
+    private MainMenuController _mainMenuController;
 
     // Start is called before the first frame update
     void Start()
     {
         _animator.Play("FadeOut");
+        _mainMenuController = UnityEngine.Object.FindObjectOfType<MainMenuController>();
         _totalKeys = _keys.transform.childCount;
         Debug.Log(_totalKeys);
         _keysCollected = 0;
@@ -44,6 +46,15 @@ public class LevelController : MonoBehaviour
         {
             setPortalActive();
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            enterMenu();
+        }
+        foreach(Button button in GameObject.FindObjectsOfType<Button>())
+        {
+            button.GetComponent<SpriteRenderer>().enabled = false;
+            button.GetComponent<BoxCollider2D>().enabled = false;
+        }
     }
 
     public void respawn()
@@ -58,7 +69,22 @@ public class LevelController : MonoBehaviour
     {
         //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         //_player.GetComponent<SpriteRenderer>().enabled = false;
+        foreach(Button button in GameObject.FindObjectsOfType<Button>())
+        {
+            if(button.name.Equals("Level" + (SceneManager.GetActiveScene().buildIndex + 1) + "Button"))
+            {
+                button.unlocked = true;
+                break;
+            }
+        }
         StartCoroutine(fading());
+    }
+
+    public void enterMenu()
+    {
+        //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+        //_player.GetComponent<SpriteRenderer>().enabled = false;
+        StartCoroutine(menuFading());
     }
 
     public void collectKey(GameObject k)
@@ -88,6 +114,13 @@ public class LevelController : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
         
+    }
+
+    IEnumerator menuFading()
+    {
+        _animator.Play("FadeIn");
+        yield return new WaitUntil(() => _black.color.a == 1);
+        SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings - 1);
     }
 
     void setKeysActive()

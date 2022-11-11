@@ -27,6 +27,11 @@ public class MenuController : MonoBehaviour
         {
             enterPortal();
         }
+        foreach (Button button in GameObject.FindObjectsOfType<Button>())
+        {
+            button.GetComponent<SpriteRenderer>().enabled = false;
+            button.GetComponent<BoxCollider2D>().enabled = false;
+        }
     }
 
     public void enterPortal()
@@ -42,13 +47,13 @@ public class MenuController : MonoBehaviour
     {
         _animator.Play("FadeIn");
         yield return new WaitUntil(() => _black.color.a == 1);
-        if (SceneManager.GetActiveScene().buildIndex + 1 >= SceneManager.sceneCountInBuildSettings)
+        if (SceneManager.GetActiveScene().name.Equals("End Menu"))
         {
             SceneManager.LoadScene(0);
         }
-        else
+        else if(SceneManager.GetActiveScene().name.Equals("Start Menu"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings-1);
         }
 
     }
