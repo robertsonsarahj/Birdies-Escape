@@ -10,7 +10,7 @@ public class MainMenuController : MonoBehaviour
     Canvas _canvas;
     public Image _black;
     public Animator _animator;
-    TextMeshProUGUI _text1;
+    public TextMeshProUGUI _text1;
     TextMeshProUGUI _text2;
     public Button Level1Button;
     public Button Level2Button;
@@ -21,19 +21,24 @@ public class MainMenuController : MonoBehaviour
     public Button Level7Button;
     public Button Level8Button;
     public Button Level9Button;
-    bool _loaded = false;
 
     void Awake()
     {
+        var go = new GameObject("Pointer");
+        DontDestroyOnLoad(go);
+
         MainMenuController[] mainMenus = GameObject.FindObjectsOfType<MainMenuController>();
         Debug.Log(mainMenus.Length);
         if(mainMenus.Length > 1)
         {
-            Destroy(this.gameObject);
+            foreach(GameObject gameObject in SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                if(gameObject.name.Equals("MainMenuController"))
+                {
+                    Destroy(gameObject);
+                }
+            }
         }
-
-        var go = new GameObject("Pointer");
-        DontDestroyOnLoad(go);
 
         Button[] savedButtons = GameObject.FindObjectsOfType<Button>();
         Debug.Log(savedButtons.Length);
@@ -177,10 +182,21 @@ public class MainMenuController : MonoBehaviour
         {
             this._animator = this._black.GetComponent<Animator>();
         }
+        if(_text1 == null)
+        {
+            for (int i = 0; i < this._canvas.transform.childCount; i++)
+            {
+                if (this._canvas.transform.GetChild(i).name.Equals("Text (TMP)"))
+                {
+                    this._text1 = this._canvas.transform.GetChild(i).GetComponent<TextMeshProUGUI>();
+                    break;
+                }
+            }
+        }
     }
 
     // Start is called before the first frame update
-    public void Start()
+    void Start()
     {
         Level1Button.unlocked = true;
         foreach(TextMeshProUGUI text in GameObject.FindObjectsOfType<TextMeshProUGUI>())
@@ -190,25 +206,39 @@ public class MainMenuController : MonoBehaviour
                 this._text1 = text;
         }
         _animator.Play("FadeOut");
-
         StartCoroutine(showText(1f, _text1));
         StartCoroutine(showText(1f, _text2));
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log(scene.name + " was loaded!");
+        if(scene.name.Equals("Level Menu"))
+        {
+            Debug.Log("we are here! " + _black.color.a);
+            var color = _black.color; color.a = 1f;
+            _black.color = color;
+            //Debug.Log("color: " + _black.color.a);
+            //_animator.Play("FadeIn");
+            _animator.Play("FadeOut");
+            StartCoroutine(showText(1, _text1));
+            StartCoroutine(showText(1, _text2));
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!_loaded && SceneManager.GetSceneByName("Level Menu").isLoaded)
-        {
-            _loaded = true;
-            StartCoroutine(fadeOut());
-            StartCoroutine(showText(1f, _text1));
-            StartCoroutine(showText(1f, _text2));
-        }
-        if(_loaded && !SceneManager.GetSceneByName("Level Menu").isLoaded)
-        {
-            _loaded = false;
-        }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastHit2D rayHit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
@@ -227,6 +257,7 @@ public class MainMenuController : MonoBehaviour
         {
             enterMenu();
         }
+        //Debug.Log(_black.color.a);
     }
 
     public void enterScene(int sceneNumber)
@@ -263,8 +294,16 @@ public class MainMenuController : MonoBehaviour
         _animator.Play("FadeOut");
     }
 
+    IEnumerator loadFading()
+    {
+        _animator.Play("FadeIn");
+        yield return new WaitUntil(() => _black.color.a == 1);
+        _animator.Play("FadeOut");
+    }
+
     IEnumerator fadeText(float t, TextMeshProUGUI i)
     {
+        Debug.Log("fading text " + i.name);
         if (i != null)
         {
             i.color = new Color(i.color.r, i.color.g, i.color.b, 1);
@@ -278,6 +317,7 @@ public class MainMenuController : MonoBehaviour
 
     IEnumerator showText(float t, TextMeshProUGUI i)
     {
+        Debug.Log("showing text " + i.name);
         if (i != null)
         {
             i.color = new Color(i.color.r, i.color.g, i.color.b, 0);
@@ -287,11 +327,5 @@ public class MainMenuController : MonoBehaviour
                 yield return null;
             }
         }
-    }
-
-    IEnumerator fadeOut()
-    {
-        _animator.Play("FadeOut");
-        yield return new WaitUntil(() => _black.color.a == 1);
     }
 }

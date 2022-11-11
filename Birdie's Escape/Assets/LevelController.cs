@@ -57,6 +57,12 @@ public class LevelController : MonoBehaviour
             button.GetComponent<SpriteRenderer>().enabled = false;
             button.GetComponent<BoxCollider2D>().enabled = false;
         }
+        if(_mainMenuController._text1.color.a != 0f)
+        {
+            var color = _mainMenuController._text1.color;
+            color.a = 0f;
+            _mainMenuController._text1.color = color;
+        }
     }
 
     public void respawn()
@@ -124,7 +130,8 @@ public class LevelController : MonoBehaviour
         yield return new WaitUntil(() => _black.color.a == 1);
         
         SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings - 1);
-        _mainMenuController.Start();
+        //StartCoroutine(_mainMenuController.fadeOut());
+        _mainMenuController._animator.Play("FadeIn");
     }
 
     void setKeysActive()

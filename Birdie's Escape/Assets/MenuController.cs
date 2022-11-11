@@ -39,6 +39,12 @@ public class MenuController : MonoBehaviour
             button.GetComponent<SpriteRenderer>().enabled = false;
             button.GetComponent<BoxCollider2D>().enabled = false;
         }
+        if (_mainMenuController._text1.color.a != 0f)
+        {
+            var color = _mainMenuController._text1.color;
+            color.a = 0f;
+            _mainMenuController._text1.color = color;
+        }
     }
 
     public void enterPortal()
@@ -61,10 +67,11 @@ public class MenuController : MonoBehaviour
         else if(SceneManager.GetActiveScene().name.Equals("Start Menu"))
         {
             SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings-1);
-            if(_mainMenuController != null)
+            /*if(_mainMenuController != null)
             {
                 _mainMenuController.Start();
-            }
+            }*/
+            _mainMenuController._animator.Play("FadeIn");
         }
     }
 
